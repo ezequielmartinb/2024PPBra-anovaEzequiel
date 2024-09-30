@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Parcial C2 2024 Laboratorio III</title>
+    <style>
+        table 
+        {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td 
+        {
+            border: 5px solid black;
+        }
+        th, td 
+        {
+            padding: 10px;
+            text-align: left;
+            background-color: aqua;
+        }
+        #formularioABM
+        {
+            display: none;
+        }
+        .extra-atributos
+        {
+            display: none;
+        }
+    </style> 
+</head>
+<body>
+    <script>
+        class Vehiculo
+        {
+            id = 0;
+            modelo = "";
+            anoFab = 0;
+            velMax = 0;
+
+            constructor(id,modelo,anoFab,velMax)
+            {                
+                this.id = id;  
+                this.modelo = modelo;
+                this.anoFab = anoFab; 
+                this.velMax = velMax;                         
+            }
+            toString() 
+            {
+                return this.id + " - " + this.modelo + " - " + this.anoFab + " - " + this.velMax;
+            }            
+        }
+        class Aereo extends Vehiculo
+        {
+            altMax = 0;
+            autonomia = 0;
+            constructor(id, modelo, anoFab, velMax, altMax, autonomia) 
+            {
+                super(id,modelo,anoFab,velMax);
+                
+                this.autonomia = autonomia;
+                this.altMax = altMax;
+                
+            } 
+            toString() 
+            {
+                var retorno = super.toString() + " - " + this.autonomia + " - " + this.altMax;
+                return retorno;
+            }                       
+        }
+        class Terrestre extends Vehiculo
+        {
+            cantPue = -1;
+            cantRue = 0;
+            constructor(id, modelo, anoFab, velMax, cantPue, cantRue) 
+            {
+                super(id, modelo, anoFab, velMax);
+                this.cantPue = cantPue;
+                this.cantRue = cantRue;                
+            } 
+            toString() 
+            {
+                var retorno = super.toString() + " - " + this.cantPue + " - " + this.cantRue;
+                return retorno;
+            }                       
+        }        
+    </script>
+    <div class="form-container">
+        <h2>Form Datos</h2>
+        <div class="form-group">
+            <label for="filter">Filtrar Por:</label>
+            <select id="filter">
+                <option value="todos">Todos</option>
+                <option value="terrestre">Terrestre</option>
+                <option value="aereo">Aereo</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="promedio_velMax">Promedio Velocidad Maxima: </label>
+            <input type="text" id="promedio_velocidad_maxima" disabled>
+            <button id="calcular" onclick="calcularPromedioVelocidadMaxima()">Calcular</button>
+        </div>
+        <div class="form-group">
+            <div class="checkbox-group" onclick="filtroColumnas()">
+                <label><input type="checkbox" name="columns" value="id" checked> ID</label>
+                <label><input type="checkbox" name="columns" value="modelo" checked> Modelo</label>
+                <label><input type="checkbox" name="columns" value="año_fab" checked> Año Fabricacion</label>
+                <label><input type="checkbox" name="columns" value="vel_max" checked> Velocidad Maxima</label>
+                <label><input type="checkbox" name="columns" value="alt_max" checked> Altura Maxima</label>
+                <label><input type="checkbox" name="columns" value="autonomia" checked> Autonomia</label>
+                <label><input type="checkbox" name="columns" value="cantPue" checked> Cantidad de Puertas</label>
+                <label><input type="checkbox" name="columns" value="cantRue" checked> Cantidad de Ruedas</label>     
+            </div>
+        </div>
+        <table id="vehiculo-table-body">
+            <thead>
+                <tr id=>
+                    <th class="id">ID</th>
+                    <th class="modelo">Modelo</th>
+                    <th class="año_fab">Año de Fabricacion</th>
+                    <th class="vel_max">Velocidad Maxima</th>
+                    <th class="alt_max">Altura Maxima</th>
+                    <th class="autonomia">Autonomia</th>
+                    <th class="cantPue">Cantidad de Puertas</th>
+                    <th class="cantRue">Cantidad de Rueda</th> 
+                    <th class="acciones">Acciones</th>                 
+                </tr>
+            </thead>  
+            <tbody id="data-table-body">
+            </tbody>  
+        </table>
+        <button id="agregar">Agregar</button>               
+    </div>
+    <div id="formularioABM">
+        <h2>Formulario ABM</h2>
+            <form>
+                <label for="id">Id:</label>
+                <input type="text" id="id" name="id" disabled><br><br>
+
+                <label id="labelAtributo1" for="atributo1">Atributo1:</label>
+                <input type="text" id="atributo1" name="atributo1"><br><br>
+
+                <label id="labelAtributo2" for="atributo2">Atributo2:</label>
+                <input type="text" id="atributo2" name="atributo2"><br><br>
+
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" onchange="cambiarAtributos()">
+                    <option value="aereo">Aereo</option>
+                    <option value="Terrestre">Terrestre</option>
+                </select><br><br>
+
+                <label id="labelAtributo3" for="atributo3">Atributo3:</label>
+                <input type="text" id="atributo3" name="atributo3"><br><br>
+
+                <div id="extraAtributos" class="extra-atributos">
+                    <label id="labelAtributo4" for="atributo4">Atributo4:</label>
+                    <input type="text" id="atributo4" name="atributo4"><br><br>
+
+                    <label id="labelAtributo5" for="atributo5">Atributo5:</label>
+                    <input type="text" id="atributo5" name="atributo5"><br><br>
+                </div>
+
+                <button type="submit" onclick="agregar()">Aceptar</button>
+                <button type="button" onclick="cerrarFormulario('formularioABM')">Cancelar</button>
+            </form>        
+    </div>
+    <script>
+        const arrayDeVehiculos = [{"id":14, "modelo":"Ferrari F100", "anoFab":1998, "velMax":400, "cantPue":2, "cantRue":4},{"id":51, "modelo":"Dodge Viper", "anoFab":1991, "velMax":266, "cantPue":2, "cantRue":4},{"id":67, "modelo":"Boeing CH-47 Chinook", "anoFab":1962, "velMax":302, "altMax":6, "autonomia":1200},{"id":666, "modelo":"Aprilia RSV 1000 R", "anoFab":2004, "velMax":280, "cantPue":0, "cantRue":2},{"id":872, "modelo":"Boeing 747-400", "anoFab":1989, "velMax":988, "altMax":13, "autonomia":13450},{"id":742, "modelo":"Cessna CH-1 SkyhookR", "anoFab":1953, "velMax":174, "altMax":3, "autonomia":870}];
+        const idInicial = 872;
+        dibujarTabla(arrayDeVehiculos);
+        
+        document.getElementById('agregar').addEventListener('click', function() 
+        {
+            document.getElementById('formularioABM').style.display = 'block';
+        });
+              
+        function dibujarTabla(array)
+        {
+            borrarDatosTabla();
+            var arrayFiltrado = array.filter(elemento=>
+            {
+                var filtro = document.getElementById("filter");
+                if((filtro.value=="terrestre" && elemento instanceof Terrestre) || filtro.value=="todos")
+                {                                
+                    return true;
+                }    
+                if((filtro.value=="aereo" && elemento instanceof Aereo) || filtro.value=="todos")
+                {
+                    return true;
+                }      
+                                
+                return false;
+            });  
+            var tbody = document.getElementById("data-table-body");
+            arrayFiltrado.forEach((vehiculo, index) => 
+            {               
+                var row = document.createElement('tr');                        
+                
+                let altMax = 'N/A';
+                if (vehiculo.altMax > 0) 
+                {
+                    altMax = vehiculo.altMax;
+                }
+
+                let autonomia = 'N/A';
+                if (vehiculo.autonomia > 0) 
+                {
+                    autonomia = vehiculo.autonomia;
+                }
+
+                let cantPue = 'N/A';
+                if (vehiculo.cantPue > -1) 
+                {
+                    cantPue = vehiculo.cantPue;
+                }
+
+                let cantRue = 'N/A';
+                if (vehiculo.cantRue > 0)
+                {
+                    cantRue = vehiculo.cantRue;
+                }
+
+                row.innerHTML = `
+                    <td class="id">${vehiculo.id}</td>
+                    <td class="modelo">${vehiculo.modelo}</td>
+                    <td class="anoFab">${vehiculo.anoFab}</td>
+                    <td class="velMax">${vehiculo.velMax}</td>
+                    <td class="altMax">${altMax}</td>
+                    <td class="autonomia">${autonomia}</td>
+                    <td class="cantPue">${cantPue}</td>
+                    <td class="cantRue">${cantRue}</td>
+                `;
+                const celda = document.createElement('td');
+                const editar = document.createElement('button');
+                editar.textContent = 'Editar';
+                editar.addEventListener('click', function() 
+                {
+                    modificar(index);
+                });
+
+                const borrar = document.createElement('button');
+                borrar.textContent = 'Eliminar';
+                borrar.addEventListener('click', function()
+                {
+                    eliminar(index);
+                });
+
+                celda.appendChild(editar);
+                celda.appendChild(borrar);
+                row.appendChild(celda);
+                tbody.appendChild(row);
+            });
+        }           
+        function mostrarColumna(columna, isChecked) 
+        {
+            const elements = document.querySelectorAll(`.${columna}`);
+            elements.forEach(element => 
+            {
+                if (isChecked) 
+                {
+                    element.style.display = '';
+                } 
+                else 
+                {
+                    element.style.display = 'none';
+                }
+            });
+        }
+        function filtroColumnas()
+        {
+            document.querySelectorAll('input[name="columns"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (event) => {
+                    mostrarColumna(event.target.value, event.target.checked);
+                });
+            });
+        }
+        
+        function borrarDatosTabla()         
+        {
+            const tbody = document.getElementById('empleados-table-body');
+            tbody.innerHTML = ''; 
+        }         
+        function cerrarFormulario(formulario) 
+        {
+            document.getElementById(formulario).style.display = 'none';
+        }
+        function cambiarAtributos() 
+        {
+            const tipo = document.getElementById('tipo').value;
+            const labelAtributo1 = document.getElementById('labelAtributo1');
+            const labelAtributo2 = document.getElementById('labelAtributo2');
+            const labelAtributo3 = document.getElementById('labelAtributo3');
+            const extraAtributos = document.getElementById('extraAtributos');
+            const labelAtributo4 = document.getElementById('labelAtributo4');
+            const labelAtributo5 = document.getElementById('labelAtributo5');
+
+            switch(tipo)
+            {
+                case "aereo":
+                    labelAtributo1.textContent = 'Modelo:';
+                    labelAtributo2.textContent = 'Año Fabricacion:';
+                    labelAtributo3.textContent = 'VelocidadMaxima:';
+                    labelAtributo4.textContent = 'Altura Maxima:';
+                    labelAtributo5.textContent = 'Autonomia:';
+                    extraAtributos.style.display = 'block'; 
+                    break;
+                default:
+                    labelAtributo1.textContent = 'Modelo:';
+                    labelAtributo2.textContent = 'Año Fabricacion:';
+                    labelAtributo3.textContent = 'VelocidadMaxima:';
+                    labelAtributo4.textContent = 'Cantidad Puertas:';
+                    labelAtributo5.textContent = 'Cantidad Ruedas:';
+                    extraAtributos.style.display = 'block'; 
+                    break;                
+            }
+        }     
+        function agregar()
+        {
+            idInicial++;
+            var atributo1 = document.getElementById('atributo1').value;
+            var atributo2 = parseInt(document.getElementById('atributo2').value);
+            var tipo = parseInt(document.getElementById('tipo').value);
+            var atributo3 = parseInt(document.getElementById('atributo3').value);
+            var atributo4 = parseInt(document.getElementById('atributo4').value);
+            var atributo5 = parseInt(document.getElementById('atributo5').value);
+            var dato = null;
+            switch(tipo)
+            {
+                case "aereo":
+                    if(typeof(atributo1)=="string" && atributo1 != '' && Number.isInteger(atributo2) && atributo2 > 1885 && Number.isInteger(atributo3) && atributo3 > 0
+                    && Number.isInteger(atributo4) && atributo4 > 0 && Number.isInteger(atributo5) && atributo5 > 0)
+                    {
+                        dato = new Aereo(idInicial, atributo1, atributo2, atributo3, atributo4, atributo5);
+                    }
+                    break;
+                case "terrestre":
+                if(typeof(atributo1)=="string" && atributo1 != '' && Number.isInteger(atributo2) && atributo2 > 1885 && Number.isInteger(atributo3) && atributo3 > 0
+                && Number.isInteger(atributo4) && atributo4 > -1 && Number.isInteger(atributo5) && atributo5 > 0)
+                {
+                    dato = new Terrestre(idInicial, atributo1, atributo2, atributo3, atributo4, atributo5);
+                }
+                break;                
+            }
+            if(dato != null)
+            {
+                arrayDeVehiculos.push(dato);                
+                dibujarTabla(arrayDeVehiculos);
+            }            
+        } 
+        function modificar(index) 
+        {
+            currentIndex = index;
+            const item = arrayDeVehiculos[index];
+
+            if(arrayDeVehiculos[index] instanceof Aereo)
+            {
+                document.getElementById('id').value = item.id;
+                document.getElementById('atributo1').value = item.modelo;
+                document.getElementById('atributo2').value = item.anoFab;
+                document.getElementById('atributo3').value = item.velMax;
+                document.getElementById('atributo4').value = item.altMax;
+                document.getElementById('atributo5').value = item.autonomia;
+            }
+            else
+            {
+                document.getElementById('id').value = item.id;
+                document.getElementById('atributo1').value = item.modelo;
+                document.getElementById('atributo2').value = item.anoFab;
+                document.getElementById('atributo3').value = item.velMax;
+                document.getElementById('atributo4').value = item.cantPue;
+                document.getElementById('atributo5').value = item.cantRue;
+            }               
+             
+            arrayDeVehiculos[index] = item;                 
+
+        }
+        function eliminar(index) 
+        {
+            arrayDeVehiculos.splice(index, 1);
+            dibujarTabla(arrayDeVehiculos);
+        }       
+        function actualizarTabla() 
+        {
+            var table = document.getElementById('data-table-body').getElementsByTagName('tbody')[0];
+            table.innerHTML = '';
+
+            arrayDeVehiculos.forEach(vehiculo => 
+            {
+                var filas = table.insertRow();
+                filas.insertCell(0).innerText = vehiculo.id;
+                filas.insertCell(1).innerText = vehiculo.modelo;
+                filas.insertCell(2).innerText = vehiculo.anoFab;
+                filas.insertCell(3).innerText = vehiculo.velMax;
+                filas.insertCell(4).innerText = vehiculo.altMax || 'N/A';
+                filas.insertCell(5).innerText = vehiculo.autonomia || 'N/A';
+                filas.insertCell(6).innerText = vehiculo.cantPue || 'N/A';
+                filas.insertCell(7).innerText = vehiculo.cantRue || 'N/A';
+            });
+        }
+        function borrarDatosTabla()   
+        {
+            const tbody = document.getElementById('data-table-body');
+            tbody.innerHTML = ''; 
+        } 
+        function calcularPromedioVelocidadMaxima() 
+        {
+            const totalVelocidadMaxima = arrayDeVehiculos.reduce((sum, vehiculo) => sum + vehiculo.velMax, 0);
+            const promedio = totalVelocidadMaxima / arrayDeVehiculos.length;
+            document.getElementById('promedio_velocidad_maxima').value = promedio.toFixed(2);
+        }        
+    </script>
+</body>
+</html>
